@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Matter.js 車子模擬</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #2c3e50;
+        }
+        canvas {
+            border: 1px solid #34495e;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script>
+        // emoji 轉換函數
+        function emojiToURL(emoji, size, yOffset = 0) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.font = `${size}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(emoji, size/2, size/2 - yOffset);
+            return canvas.toDataURL();
+        }
+
+        // 初始化物理引擎
+        var Engine = Matter.Engine,
+            Render = Matter.Render,
+            World = Matter.World,
+            Bodies = Matter.Bodies,
+            Constraint = Matter.Constraint,
+            Body = Matter.Body;
+
+        var engine = Engine.create();
+        var world = engine.world;
+
+        // 建立渲染器
+        var render = Render.create({
+            element: document.body,
+            engine: engine,
+            options: {
+                width: 800,
+                height: 600,
+                wireframes: false,
+                background: '#2c3e50'
+            }
+        });
+
+        // 建立邊界
+        var ground = Bodies.rectangle(400, 590, 810, 20, { 
+            isStatic: true,
+            render: { fillStyle: '#34495e' }
+        });
+        var leftWall = Bodies.rectangle(10, 300, 20, 600, { 
+            isStatic: true,
+            render: { fillStyle: '#34495e' }
+        });
+        var rightWall = Bodies.rectangle(790, 300, 20, 600, { 
+            isStatic: true,
+            render: { fillStyle: '#34495e' }
+        });
+        var ceiling = Bodies.rectangle(400, 10, 810, 20, { 
+            isStatic: true,
+            render: { fillStyle: '#34495e' }
+        });
+
+        // 定義碰撞分類
+        var defaultCategory = 0x0001,
+            carCategory = 0x0002,
+            wheelCategory = 0x0004;
+
+        // 建立車身
+        var carBody = Bodies.rectangle(400, 300, 200, 100, {
+            collisionFilter: {
+                category: carCategory,
+                mask: defaultCategory
+            },
+            render: {
+                sprite: {
+                    texture: emojiToURL('🚗', 200, 25)
+                }
+            }
+        });
+
+        // 輪胎大小設定
+        const wheelRadius = 25;
+        const wheelOffset = wheelRadius * 2 / 8; // 輪胎直徑的 1/8
+
+        // 建立輪子
+        var wheelA = Bodies.circle(400 + 65, 300 + 50, wheelRadius, {
+            collisionFilter: {
+                category: wheelCategory,
+                mask: defaultCategory
+            },
+            friction: 0.8,
+            render: {
+                sprite: {
+                    texture: emojiToURL('🛞', wheelRadius * 2, wheelOffset)
+                }
+            }
+        });
+
+        var wheelB = Bodies.circle(400 - 65, 300 + 50, wheelRadius, {
+            collisionFilter: {
+                category: wheelCategory,
+                mask: defaultCategory
+            },
+            friction: 0.8,
+            render: {
+                sprite: {
+                    texture: emojiToURL('🛞', wheelRadius * 2, wheelOffset)
+                }
+            }
+        });
+
+        // 建立約束
+        var constraintA = Constraint.create({
+            bodyA: carBody,
+            bodyB: wheelA,
+            pointA: { x: 65, y: 50 },
+            stiffness: 1,
+            length: 0
+        });
+
+        var constraintB = Constraint.create({
+            bodyA: carBody,
+            bodyB: wheelB,
+            pointA: { x: -65, y: 50 },
+            stiffness: 1,
+            length: 0
+        });
+
+        // 建立方塊塔
+        var stack = [];
+        for(var row = 0; row < 2; row++) {
+            for(var i = 0; i < 20; i++) {
+                var block = Bodies.rectangle(700 + (row * 25), 550 - i * 25, 20, 20, {
+                    render: { fillStyle: '#95a5a6' }
+                });
+                stack.push(block);
+            }
+        }
+
+        // 鍵盤控制
+        document.addEventListener('keydown', function(event) {
+            if(event.code === 'ArrowRight') {
+                Body.setAngularVelocity(wheelA, 0.3);
+                Body.setAngularVelocity(wheelB, 0.3);
+            }
+            if(event.code === 'ArrowLeft') {
+                Body.setAngularVelocity(wheelA, -0.3);
+                Body.setAngularVelocity(wheelB, -0.3);
+            }
+            if(event.code === 'Space') {
+                Body.applyForce(carBody, carBody.position, {x: 0, y: -0.4});
+            }
+        });
+
+        // 將所有物件加入世界
+        World.add(world, [
+            ground, leftWall, rightWall, ceiling,
+            carBody, wheelA, wheelB,
+            constraintA, constraintB,
+            ...stack
+        ]);
+
+        // 啟動引擎和渲染器
+        Engine.run(engine);
+        Render.run(render);
+    </script>
+</body>
+</html>

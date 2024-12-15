@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>地球、月相與星空</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000814;
+            cursor: none;
+        }
+        
+        .star {
+            position: absolute;
+            color: white;
+            animation: twinkle 1.5s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+        
+        #moon {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            user-select: none;
+            transition: all 0.1s ease;
+            z-index: 1;
+        }
+
+        #earth {
+            position: absolute;
+            font-size: 300px;
+            user-select: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 16px;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div id="earth">🌍</div>
+    <img id="moon" src="./image/station.png" alt="Space Station">
+    <audio id="bgMusic" loop>
+        <source src="./music/tribe.mp3" type="audio/mp3">
+    </audio>
+    <div class="hint">點擊畫面播放音樂</div>
+
+<script>
+    const moon = document.getElementById('moon');
+    const earth = document.getElementById('earth');
+    const earthPhases = ['🌍', '🌎', '🌏'];
+    const bgMusic = document.getElementById('bgMusic');
+    const hint = document.querySelector('.hint');
+    let earthPhase = 0;
+    let lastX = 0;
+    
+    document.addEventListener('click', () => {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            hint.style.display = 'none';
+        } else {
+            bgMusic.pause();
+            hint.style.display = 'block';
+        }
+    });
+
+    function createStars() {
+        const starCount = 100;
+        const stars = ['⭐', '✨', ''];
+        
+        for(let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * window.innerWidth + 'px';
+            star.style.top = Math.random() * window.innerHeight + 'px';
+            star.innerHTML = stars[Math.floor(Math.random() * stars.length)];
+            star.style.fontSize = Math.random() * 15 + 5 + 'px';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(star);
+        }
+    }
+
+    setInterval(() => {
+        earthPhase = (earthPhase + 1) % earthPhases.length;
+        earth.innerHTML = earthPhases[earthPhase];
+    }, 1000);
+    
+    document.addEventListener('mousemove', (e) => {
+        const currentX = e.clientX;
+        
+        if (currentX > lastX) {
+            moon.style.zIndex = 1;
+            earth.style.zIndex = 2;
+        } else if (currentX < lastX) {
+            moon.style.zIndex = 3;
+            earth.style.zIndex = 2;
+        }
+        
+        lastX = currentX;
+        
+        moon.style.left = e.clientX - 100 + 'px';
+        moon.style.top = e.clientY - 100 + 'px';
+    });
+    
+    createStars();
+    
+    setInterval(() => {
+        document.querySelectorAll('.star').forEach(star => star.remove());
+        createStars();
+    }, 5000);
+</script>
+</body>
+</html>

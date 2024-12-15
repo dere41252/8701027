@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>地球、月相與星空</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000814;
+            cursor: none;
+        }
+        
+        .star {
+            position: absolute;
+            color: white;
+            animation: twinkle 1.5s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+        
+        #moon {
+            position: absolute;
+            font-size: 200px;
+            user-select: none;
+            transition: all 0.1s ease;
+            z-index: 1;
+        }
+
+        #earth {
+            position: absolute;
+            font-size: 300px;
+            user-select: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div id="earth">🌍</div>
+    <div id="moon">🌑</div>
+
+<script>
+    const moon = document.getElementById('moon');
+    const earth = document.getElementById('earth');
+    const phases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+    const earthPhases = ['🌍', '🌎', '🌏'];
+    let currentPhase = 0;
+    let earthPhase = 0;
+    let lastX = 0;
+    
+    // 創建星星
+    function createStars() {
+        const starCount = 100;
+        const stars = ['⭐', '✨', ''];
+        
+        for(let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * window.innerWidth + 'px';
+            star.style.top = Math.random() * window.innerHeight + 'px';
+            star.innerHTML = stars[Math.floor(Math.random() * stars.length)];
+            star.style.fontSize = Math.random() * 15 + 5 + 'px';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(star);
+        }
+    }
+    
+    // 月相變化
+    setInterval(() => {
+        currentPhase = (currentPhase + 1) % phases.length;
+        moon.innerHTML = phases[currentPhase];
+    }, 200);  // 每200毫秒改變一次
+
+    // 地球自轉
+    setInterval(() => {
+        earthPhase = (earthPhase + 1) % earthPhases.length;
+        earth.innerHTML = earthPhases[earthPhase];
+    }, 1000);  // 每秒改變一次
+    
+    // 跟隨滑鼠並調整圖層
+    document.addEventListener('mousemove', (e) => {
+        const currentX = e.clientX;
+        
+        // 判斷移動方向並調整圖層
+        if (currentX > lastX) {
+            // 向右移動，月亮在地球下面
+            moon.style.zIndex = 1;
+            earth.style.zIndex = 2;
+        } else if (currentX < lastX) {
+            // 向左移動，月亮在地球上面
+            moon.style.zIndex = 3;
+            earth.style.zIndex = 2;
+        }
+        
+        lastX = currentX;
+        
+        moon.style.left = e.clientX - 100 + 'px';
+        moon.style.top = e.clientY - 100 + 'px';
+    });
+    
+    // 初始化星空
+    createStars();
+    
+    // 定期重新產生星星
+    setInterval(() => {
+        document.querySelectorAll('.star').forEach(star => star.remove());
+        createStars();
+    }, 5000);
+</script>
+</body>
+</html>

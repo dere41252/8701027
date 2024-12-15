@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Matter.js 約束示範</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script>
+        // 初始化物理引擎
+        var Engine = Matter.Engine,
+            Render = Matter.Render,
+            World = Matter.World,
+            Bodies = Matter.Bodies,
+            Constraint = Matter.Constraint,
+            MouseConstraint = Matter.MouseConstraint,
+            Mouse = Matter.Mouse;
+
+        var engine = Engine.create();
+        var world = engine.world;
+
+        // 建立渲染器
+        var render = Render.create({
+            element: document.body,
+            engine: engine,
+            options: {
+                width: 800,
+                height: 600,
+                wireframes: false
+            }
+        });
+
+        // 建立邊界
+        var ground = Bodies.rectangle(400, 590, 810, 20, { isStatic: true });
+        var leftWall = Bodies.rectangle(10, 300, 20, 600, { isStatic: true });
+        var rightWall = Bodies.rectangle(790, 300, 20, 600, { isStatic: true });
+        var ceiling = Bodies.rectangle(400, 10, 810, 20, { isStatic: true });
+
+        // 彈性約束示範1：兩個方形
+        var box1 = Bodies.rectangle(300, 200, 50, 50);
+        var box2 = Bodies.rectangle(400, 200, 50, 50);
+        var elasticConstraint1 = Constraint.create({
+            bodyA: box1,
+            bodyB: box2,
+            stiffness: 0.01,
+            render: {
+                strokeStyle: '#4a4a4a',
+                lineWidth: 5
+            }
+        });
+
+        // 彈性約束示範2：圓球和固定點
+        var circle1 = Bodies.circle(200, 300, 20);
+        var elasticConstraint2 = Constraint.create({
+            pointA: { x: 200, y: 100 },
+            bodyB: circle1,
+            stiffness: 0.01,
+            render: {
+                strokeStyle: '#4a4a4a',
+                lineWidth: 5
+            }
+        });
+
+        // 剛性約束示範1：兩個圓
+        var bigCircle = Bodies.circle(500, 300, 50);
+        var smallCircle = Bodies.circle(600, 300, 25);
+        var stiffConstraint1 = Constraint.create({
+            bodyA: bigCircle,
+            bodyB: smallCircle,
+            length: 200,
+            stiffness: 1,
+            render: {
+                strokeStyle: '#4a4a4a',
+                lineWidth: 5
+            }
+        });
+
+        // 剛性約束示範2：圓球和固定點
+        var circle2 = Bodies.circle(600, 200, 20);
+        var stiffConstraint2 = Constraint.create({
+            pointA: { x: 600, y: 100 },
+            bodyB: circle2,
+            stiffness: 1,
+            render: {
+                strokeStyle: '#4a4a4a',
+                lineWidth: 5
+            }
+        });
+
+        // 建立方塊塔
+        var stack = [];
+        for(var i = 0; i < 10; i++) {
+            var block = Bodies.rectangle(700, 550 - i * 30, 20, 100);
+            stack.push(block);
+        }
+
+        // 加入滑鼠控制
+        var mouse = Mouse.create(render.canvas);
+        var mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                stiffness: 0.2,
+                render: {
+                    visible: false
+                }
+            }
+        });
+
+        // 將所有物件加入世界
+        World.add(world, [
+            ground, leftWall, rightWall, ceiling,
+            box1, box2, elasticConstraint1,
+            circle1, elasticConstraint2,
+            bigCircle, smallCircle, stiffConstraint1,
+            circle2, stiffConstraint2,
+            mouseConstraint,
+            ...stack
+        ]);
+
+        // 啟動引擎和渲染���
+        Engine.run(engine);
+        Render.run(render);
+    </script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>互動式網頁展示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+
+        h1 {
+            color: #1a73e8;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .category {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #202124;
+            border-bottom: 2px solid #1a73e8;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .demo-item {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.2s;
+        }
+
+        .demo-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .demo-item h3 {
+            color: #1a73e8;
+            margin: 0 0 10px 0;
+        }
+
+        .demo-item p {
+            color: #5f6368;
+            margin: 0 0 15px 0;
+            font-size: 0.9em;
+        }
+
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 互動式網頁展示</h1>
+
+    <div class="category">
+        <h2>🎯 姿態偵測遊戲</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>🏃 基礎姿態偵測</h3>
+                <p>使用MediaPipe進行人體姿態偵測，可以追蹤身體關鍵點的位置。</p>
+                <a href="00_001body.html">開始體驗</a>
+            </div>
+            <div class="demo-item">
+                <h3>🤖 姿態互動遊戲</h3>
+                <p>結合物理引擎的姿態偵測互動遊戲，使用身體控制遊戲物件。</p>
+                <a href="00_001posture.html">開始體驗</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>🌌 宇宙探索</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>🌍 地球與月球</h3>
+                <p>互動式地球和月球動畫，展示天體運動。</p>
+                <a href="00_0002moon.html">開始體驗</a>
+            </div>
+            <div class="demo-item">
+                <h3>🛸 太空站模擬</h3>
+                <p>太空站與地球互動動畫，包含音效。</p>
+                <a href="00_0004moon.html">開始體驗</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>⚡ 物理引擎展示</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>🎲 物理遊樂場</h3>
+                <p>使用Matter.js物理引擎製作的互動遊樂場。</p>
+                <a href="00_006phy.html">開始體驗</a>
+            </div>
+            <div class="demo-item">
+                <h3>🚗 運動模擬</h3>
+                <p>等速與加速運動的視覺化比較。</p>
+                <a href="00_007phy.html">開始體驗</a>
+            </div>
+            <div class="demo-item">
+                <h3>⚓ 物理約束</h3>
+                <p>展示不同類型的物理約束效果。</p>
+                <a href="00_008phy.html">開始體驗</a>
+            </div>
+            <div class="demo-item">
+                <h3>🚙 車輛模擬</h3>
+                <p>使用物理引擎模擬的可控制車輛。</p>
+                <a href="00_009phy.html">開始體驗</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>👤 臉部偵測</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>😊 表情互動</h3>
+                <p>使用MediaPipe進行臉部特徵偵測，並添加有趣的互動效果。</p>
+                <a href="00_0011face.html">開始體驗</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>🎨 其他工具</h2>
+        <div class="demo-grid">
+            <div class="demo-item">
+                <h3>😀 Emoji 列表</h3>
+                <p>完整的Emoji顯示與複製工具。</p>
+                <a href="00_0001emoji.html">開始體驗</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
